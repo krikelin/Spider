@@ -5,11 +5,20 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,9 +26,16 @@ import javax.swing.JComponent;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.python.antlr.PythonParser.not_test_return;
+import org.python.apache.xerces.parsers.DOMParser;
+import org.python.core.PyClass;
+import org.python.core.PyObject;
+import org.python.core.PyString;
+import org.python.util.PythonInterpreter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 /***
  * webview for SPView
@@ -207,7 +223,40 @@ public class SPWebView extends JComponent {
 	
 		return null;
 	}
-	public void loadMarkup(String markup,Properties props)
+	/***
+	 * @from http://www.kodejava.org/examples/266.html
+	 * @param is
+	 * @return
+	 * @throws IOException
+	 */
+	public String convertStreamToString(InputStream is)
+            throws IOException {
+        /*
+         * To convert the InputStream to String we use the
+         * Reader.read(char[] buffer) method. We iterate until the
+         * Reader return -1 which means there's no more data to
+         * read. We use the StringWriter class to produce the string.
+         */
+        if (is != null) {
+            Writer writer = new StringWriter();
+
+            char[] buffer = new char[1024];
+            try {
+                Reader reader = new BufferedReader(
+                        new InputStreamReader(is, "UTF-8"));
+                int n;
+                while ((n = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, n);
+                }
+            } finally {
+                is.close();
+            }
+            return writer.toString();
+        } else {        
+            return "";
+        }
+    }
+/**	public void loadMarkup(String markup,Properties props)
 	{
 	
 		try {
@@ -229,11 +278,28 @@ public class SPWebView extends JComponent {
 		}
 		
 	}
-	public void loadMarkup(InputStream in,Properties props)
+	*
+	*/
+	public void loadMarkup(InputStream in,Object vars)
 	{
 	
 		try {
-			Document c = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
+			PythonInterpreter interpreter = new PythonInterpreter();
+	        interpreter.exec("from mako.template import Template");
+	        PyObject buildingClass = interpreter.get("Template"); 
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        PyObject instance = buildingClass.__call__(new PyString(convertStreamToString(in)));
+	         interpreter.set("datax",vars);
+	         interpreter.setOut(baos) ;
+	         
+	         // invoke the string
+	         interpreter.set("invoker", instance);
+	         interpreter.exec("print invoker.render(data=datax)");
+	         String parsedData = new String(baos.toByteArray(), "ISO-8859-1");
+	         
+			DOMParser parser = new DOMParser();
+			parser.parse(new InputSource(new StringReader(parsedData)));
+			Document c = parser.getDocument();
 			Element elm = deserialize(c);
 			getElements().add(elm);
 			elm.setBounds(new Rectangle(0,0,getWidth(),getHeight()));
@@ -241,9 +307,6 @@ public class SPWebView extends JComponent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {

@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+<%
+img_url = "http://o.scdn.co/image/7baf1b768a03b5b70bea94b7264decb69ec71971"
+test = "test"
+%>
 <document>
 	<vbox flex="1">
 		<hbox height="128">
-			<image src="http://o.scdn.co/image/7baf1b768a03b5b70bea94b7264decb69ec71971" width="128" />
+			<image src="${img_url}" width="128" />
 			<vbox flex="1">
-				<text flex="0"   height="30">Playlist</text>
+				<text flex="0"   height="30">${test}</text>
 				<hbox height="34">
 					<image width="97" flex="0" 
 							src_mousedown="res:toolbar_left.png" 
@@ -17,9 +21,9 @@
 				</hbox>
 				<text flex="1">test x</text>
 			</vbox>
-			<vbox flex="0" width="50" /> 
-		
+			<vbox flex="0" width="150" >
 			
+			</vbox>
 		</hbox>
 		<hbox flex="1"></hbox>
 	</vbox>

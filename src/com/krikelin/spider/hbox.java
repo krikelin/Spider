@@ -90,11 +90,11 @@ public class hbox extends Element {
 		int space = getBounds().width - (leftWidth+rightWidth);
 		// Then calculate individual sizes
 		
-		// Then assign the width to the children
+		// Then assign the width to t he children
 		int i=0;
 		
-		int left=0;
-		// Then assign the proportions of the left page
+		int left=0; 
+		// Then assign the prop ortions of the left page
 		for(Element elm : staticFirstElements)
 		{
 			elm.setBounds(new Rectangle(getBounds().x+left+getPadding(),getBounds().y+getPadding(),elm.getBounds().width-getPadding()*2,getBounds().height-getPadding()*2));

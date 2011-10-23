@@ -40,7 +40,7 @@ public class DefaultSkin extends SPSkin {
 		{
 			// draw shadow
 			g.setColor(shadowColor);
-			g.drawString(str,x,y+1);
+		//	g.drawString(str,x,y+1);
 		}
 		// draw text
 		g.setColor(colour);
