@@ -141,7 +141,7 @@ public class hbox extends Element {
 	public void setHeight(Integer height)
 	{ 
 		super.mBounds = new Rectangle(0,0,getWidth(),height);
-	}
+	} 
 	@Override
 	public void mouseOver(Point absolutePoints) {
 		// TODO Auto-generated method stub

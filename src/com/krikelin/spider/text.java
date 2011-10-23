@@ -65,7 +65,7 @@ public class text extends Element {
 			char character = buffer.charAt(i);
 			//g.drawChars(new char[]{character},0+getPadding(),1+getPadding(), x, y);
 			// increase the pointer's location
-			getHost().getSkin().drawText(String.valueOf(character), getHost().getSkin().getForeColor(), g, x, y+20, true);
+			getHost().getSkin().drawText(String.valueOf(character), getHost().getSkin().getForeColor(), g, x, y, true);
 			x += strBounds.getWidth();
 		}
 	}
