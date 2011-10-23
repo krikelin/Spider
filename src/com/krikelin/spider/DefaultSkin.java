@@ -48,7 +48,6 @@ public class DefaultSkin extends SPSkin {
 	private Color mPlayingEntryFg;
 	private Image mButtonImage;
 	private Image mHeaderImage;
-	private Image mShadowImage;
 	private Image mVDividerImage;
 	private Image mButtonPressedImage;
 	@Override
@@ -56,12 +55,10 @@ public class DefaultSkin extends SPSkin {
 	{
 		return mButtonPressedImage;
 	}
-	private Image mBottomImage;
 	private Color mBackgroundColor;
 	private Color mForeColor;
 	private Color mLinkColor;
 	private Color mAlternateFgColor;
-	private Color mAlternateColor;
 	private Color mAlternatingBgColor;
 	private Image mSectionBackground;
 	private Color mShadowColor;
@@ -87,9 +84,6 @@ public class DefaultSkin extends SPSkin {
 
 		BufferedImage image = img;
 		int c = image.getRGB(x,y);
-		int  red = (c & 0x00ff0000) >> 16;
-		int  green = (c & 0x0000ff00) >> 8;
-		int  blue = c & 0x000000ff;
 		Color color = new Color(c,false);
 		return color;
 	}
@@ -103,7 +97,7 @@ public class DefaultSkin extends SPSkin {
 		// Copy pixels to the buffer
 		
 	
-		boolean c =	bi.getGraphics().drawImage(src, 0,0,width,height,  left,top+4,left+width,top+height,(ImageObserver)null);
+		bi.getGraphics().drawImage(src, 0,0,width,height,  left,top+4,left+width,top+height,(ImageObserver)null);
 		
 		
 		return bi;
@@ -131,7 +125,7 @@ public class DefaultSkin extends SPSkin {
 			BufferedImage r = dest;
 			
 		
-			Graphics2D D = dest.createGraphics();
+			dest.createGraphics();
 			mFont = new Font("Tahoma",8,11);
 			/**
 			 * Define colors.

@@ -1,27 +1,25 @@
 package com.krikelin.spider;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.script.ScriptException;
 import javax.swing.JComponent;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 /***
  * webview for SPView
@@ -43,6 +41,8 @@ public class SPWebView extends JComponent {
 	public void paint(Graphics arg0) {
 		// TODO Auto-generated method stub
 		super.paint(arg0);
+		arg0.setColor(getSkin().getBackgroundColor());
+		arg0.fillRect(0, 0, getWidth(), getHeight());
 		if(getElements().size()> 0)
 		{
 			Element c = getElements().get(0);
@@ -89,7 +89,20 @@ public class SPWebView extends JComponent {
 		return bob;
 	}
 	String cf = "";
-	
+	public Element deserialize(Document d) throws NoSuchMethodException
+	{
+		
+		for(int i=0; i < d.getDocumentElement().getChildNodes().getLength(); i++){
+			
+			org.w3c.dom.Node elm = d.getDocumentElement().getChildNodes().item(i);
+			if(elm instanceof org.w3c.dom.Element){
+				Element _elm = deserialize((org.w3c.dom.Element)elm);
+				return _elm;
+			}
+			
+		}
+		return null;
+	}
 	public Element deserialize(Node c) throws NoSuchMethodException
 	{
 		
@@ -99,31 +112,64 @@ public class SPWebView extends JComponent {
 			org.w3c.dom.Element elm = (org.w3c.dom.Element)c;
 		
 			try {
-				Element _elm = (Element)Class.forName(elm.getTagName().toLowerCase()).getConstructors()[0].newInstance(getContext(),this);
+				Element _elm = (Element)Class.forName("com.krikelin.spider."+elm.getTagName().toLowerCase()).getConstructors()[0].newInstance(this);
 				
 				for(int i=0; i <elm.getAttributes().getLength(); i++)
 				{
 					Node attrib = elm.getAttributes().item(i);
 					String val = attrib.getNodeValue();
 					String attribute = attrib.getNodeName();
+					String methodName = capitalize(attribute).trim();
 					try
 					{
+						
 						int valN = Integer.valueOf(val);
-						elm.getClass().getMethod("set"+capitalize(attribute),Integer.class).invoke(elm,valN);
+						Class.forName("com.krikelin.spider."+elm.getTagName().toLowerCase()).getMethod("set"+methodName,java.lang.Integer.class).invoke(_elm,valN);
 					}
 					catch(Exception e)
 					{
-						_elm.getClass().getMethod("set"+capitalize(attribute), String.class).invoke(elm, val);
-						
+						try{
+							_elm.getClass().getDeclaredMethod("set"+methodName, String.class).invoke(_elm, val);
+						}
+						catch(Exception e2){
+							
+						}
 					}
-					for(int j=0; j <elm.getChildNodes().getLength(); j++)
-					{
-						
-						Element f = deserialize(elm.getChildNodes().item(i));
-						_elm.getChildren().add(f);
-					}
+					// set data of method
+					
+					
+					
+				
 					
 				}
+				try
+				{
+					Node x= ((org.w3c.dom.Element)elm).getFirstChild();
+					if(x instanceof org.w3c.dom.Text)
+						if(x.getNodeValue() != null)
+						{
+							_elm.getClass().getMethod("setData", java.lang.String.class).invoke(_elm,x.getNodeValue());
+							
+						}
+				}
+				catch(Exception e)
+				{
+					
+				}
+				NodeList childNodes = elm.getChildNodes();
+				for(int j=0; j < childNodes.getLength(); j++)
+				{
+					Node welm = childNodes.item(j);
+					if(welm instanceof org.w3c.dom.Element)
+					{
+						Element f = deserialize(welm);
+						if(f != null)
+						{
+							f.setBounds(new Rectangle(0,0,_elm.getWidth(),_elm.getHeight()));
+							_elm.getChildren().add(f);
+						}
+					}
+					}
 				return _elm;
 			} catch (InstantiationException e) {
 				// TODO Auto-generated catch block
@@ -152,39 +198,10 @@ public class SPWebView extends JComponent {
 	}
 	public void loadMarkup(String markup,Properties props)
 	{
-		cf = "";
-		ByteArrayOutputStream baos = new ByteArrayOutputStream()
-		{
-
-			@Override
-			public synchronized void write(byte[] arg0, int arg1, int arg2) {
-				// TODO Auto-generated method stub
-				super.write(arg0, arg1, arg2);
-				cf+=arg0;
-			}
-		};
-					
-		/*try {
-			
-			
-			Casper.eval(new ByteArrayInputStream(markup.getBytes()), baos, props);
-		
-		} catch (CasperException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// Render content
-		catch (ScriptException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		 
+	
 		try {
 			Document c = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(cf);
-			Element elm = deserialize(c);
+			Element elm = deserialize(c.getDocumentElement());
 			getElements().add(elm);
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
@@ -201,13 +218,36 @@ public class SPWebView extends JComponent {
 		}
 		
 	}
+	public void loadMarkup(InputStream in,Properties props)
+	{
+	
+		try {
+			Document c = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
+			Element elm = deserialize(c);
+			getElements().add(elm);
+			elm.setBounds(new Rectangle(0,0,getWidth(),getHeight()));
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	} 
 	Timer mRefresher;
-	public SPWebView(JComponent mContext) {
+	public SPWebView(JComponent mContext) {  
 
 		mRefresher = new Timer();
 		mRefresher.scheduleAtFixedRate(new TimerTask(){
 
-			@Override
+			@Override  
 			public void run() {
 				// TODO Auto-generated method stub
 				repaint();
@@ -218,7 +258,59 @@ public class SPWebView extends JComponent {
 		mSkin = new DefaultSkin();
 		setBackground(mSkin.getBackgroundColor());
 		//setBackground(mContext.getSkin().getBackgroundColor());
-		
+		addMouseMotionListener(new MouseMotionListener() {
+			
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// TODO Auto-generated method stub
+				for(Element elm : getElements())
+				{
+					elm.mouseOver(new Point(e.getPoint().x + elm.getBounds().x,e.getPoint().y + elm.getBounds().y), e.getPoint());
+					
+				}
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				for(Element elm : getElements())
+				{
+					elm.mouseClicked(new Point(e.getPoint().x + elm.getBounds().x,e.getPoint().y + elm.getBounds().y), e.getPoint());
+				}
+			}
+		});
 		// TODO Auto-generated constructor stub
 	}
 	/* (non-Javadoc)

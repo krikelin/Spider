@@ -1,27 +1,29 @@
 package com.krikelin.spider;
 
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
-import javax.swing.JComponent;
-
 public class text extends Element {
-	private SPWebView mHost;
 	public text(SPWebView host) {
 		super(host);
-		this.mHost=host;
-		// TODO Auto-generated constructor stub
 	}
 
 
-
+	public void setData(String data)
+	{
+		mText=data;
+	}
 	@Override
 	public void assignChildren() {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public void setFlex(Integer flex)
+	{ 
+		mFlex=flex;
 	}
 	private String mText;
 	private Object mTag;
@@ -37,10 +39,9 @@ public class text extends Element {
 	public void paint(Graphics g, Rectangle bounds) {
 		// TODO Auto-generated method stub
 		super.paint(g, bounds);
-		int col = 0 ; // column
-		int row = 0; // row
+		if(mText == null)
+			return;
 		int x = 0,y = 0;
-		String lineBuffer ="";
 		String buffer = mText;
 		g.translate(bounds.x, bounds.y);
 		for(int i=0; i < buffer.length(); i++)
@@ -53,8 +54,6 @@ public class text extends Element {
 				
 				if(buffer.charAt(i+1 )== '\n' || x >=  wid - getPadding()*2)
 				{
-					col = 0;
-					row += 1;
 					y += strBounds.getHeight();
 					x = 0;
 				}
@@ -63,7 +62,6 @@ public class text extends Element {
 			//g.drawChars(new char[]{character},0+getPadding(),1+getPadding(), x, y);
 			// increase the pointer's location
 			getHost().getSkin().drawText(String.valueOf(character), getHost().getSkin().getForeColor(), g, x, y+20, true);
-			col += 1;
 			x += strBounds.getWidth();
 		}
 		g.translate(-bounds.x, -bounds.y);

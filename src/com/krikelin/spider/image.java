@@ -7,26 +7,20 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
-import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 
 public class image extends Element
 {
-	private JComponent mContext;
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2226107120577730295L;
 	private Image mImage;
-	public image(SPWebView host,Image mImage)
+	public image(SPWebView host)
 	{
 		super(host);
-		this.mImage = mImage;
 		
 	}
 	private URL mUri;
@@ -56,6 +50,15 @@ public class image extends Element
 			e1.printStackTrace();
 		}
 	
+	}
+	public void setSrc(String src)
+	{
+		try {
+			downloadImage(new URL(src));
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public void downloadImage(final URL source)
 	{

@@ -1,19 +1,17 @@
 package com.krikelin.spider;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.io.InputStream;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 public class SPMLTest {
-	private static text d;
 	/**
 	 * Creates an test label
 	 * @param text
 	 * @param flex
 	 * @param webview
-	 * @return
+	 * @return 
 	 */
 	protected static text createText(String text,int flex,SPWebView webview,int width)
 	{
@@ -54,20 +52,14 @@ public class SPMLTest {
 		return box;
 		
 	}
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args){
 		JFrame frame = new JFrame();
 		JComponent sw = null;
 		SPWebView webview = new SPWebView(sw);
-		
-		frame.add(webview,BorderLayout.CENTER);
-		hbox armature = new hbox(webview);
-		
-		armature.getChildren().add(createText("test1",0,webview,50));
-		Element vb = Spider(webview,1,1,3,320);
-		armature.getChildren().add(vb);
-		armature.getChildren().add(createText("test4",0,webview,140));
-		webview.getElements().add(armature);
-		frame.setSize(new Dimension(640,480));
-		frame.show();
-	}
+		InputStream stream = SPMLTest.class.getResourceAsStream("boxmodel.xml");
+		webview.loadMarkup(stream, null);
+		frame.add(webview);
+ 		frame.show(); 
+	} 
 }

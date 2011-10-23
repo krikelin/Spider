@@ -1,13 +1,10 @@
 package com.krikelin.spider;
 
 import java.awt.Graphics;
-import java.awt.List;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Hashtable;
-
-import javax.swing.JComponent;
 
 
 
@@ -16,7 +13,7 @@ import javax.swing.JComponent;
  * @author Alex
  *
  */
-public abstract class Element {
+public class Element {
 	private int mPadding;
 	public int getPadding()
 	{
@@ -63,14 +60,15 @@ public abstract class Element {
 	public Element(SPWebView host)
 	{
 		mHost=host;
+		
 	}
 	
-	private int mFlex;
+	protected int mFlex;
 	public int getFlex()
 	{
 		return mFlex;
 	}
-	public void setFlex(int i)
+	public void setFlex(Integer i)
 	{
 		mFlex=i;
 	}
@@ -103,6 +101,11 @@ public abstract class Element {
 	public void assignChildren(){
 		for(Element c : getChildren())
 		{
+			
+			if(c.getBounds() == null)
+			{
+				c.setBounds(new Rectangle(0,0,0,0));
+			}
 			if(c.getBounds().width <= 0)
 			{
 				c.getBounds().width = getWidth();
@@ -185,6 +188,13 @@ public abstract class Element {
 			return defaultValue;
 		}
 	}
+	private MouseListener mMouseListener;
+	public MouseListener getMouseListener() {
+		return mMouseListener;
+	}
+	public void setMouseListener(MouseListener mMouseListener) {
+		this.mMouseListener = mMouseListener;
+	}
 	/***
 	 * MouseListener adapter
 	 * @author Alex
@@ -213,16 +223,24 @@ public abstract class Element {
 		 * @param args
 		 */
 		public abstract void onLoad(Object... args);
+		public void mouseClicked(Point relativePoint) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	/***
 	 * Gets the tag for the object
-	 * @return
+	 * @return 
 	 */
-	public abstract Object getTag();
+	public  Object getTag() {
+		return null;
+	}
 	/***
 	 * Creates the elemenet
 	 */
-	public abstract void create();
+	public  void create() { 
+		
+	}
 	/***
 	 * Paints the element on the board. The x and y coordinates 
 	 * is relative to the scrolling and anchors
@@ -234,29 +252,79 @@ public abstract class Element {
 	{
 		// Draws the container's children
 	}
+	public boolean inBounds(Point c)
+	{
+		assignChildren();
+		if(c.x >= getBounds().x &&
+			c.x <= getBounds().x + getWidth() &&
+		c.y >= getBounds().y &&
+		c.y <= getBounds().y + getHeight()){
+			return true;
+		}
+		return false;
+					
+	}
 	/**
 	 * Occurs when mouse is over the element
 	 * @param relativePoint
 	 * @param absolutePoints
 	 */
-	public abstract void mouseOver(Point relativePoint,Point absolutePoints);
+	public void mouseOver(Point relativePoint,Point absolutePoints){
+		assignChildren();
+		for(Element e: getChildren())
+		{
+			if(e.inBounds(relativePoint))
+				e.mouseOver(new Point(relativePoint.x+e.getBounds().x,relativePoint.x+e.getBounds().y), absolutePoints);
+				
+		}
+		if(getMouseListener()!= null)
+		{
+			getMouseListener().mouseOver(relativePoint, absolutePoints);
+		}
+	}
 	
 	/***
 	 * Occurs on mouse down
 	 * @param relativePoint
 	 */
 	public void mouseDown(Point relativePoint,Point absolutePoints){
-		
+		for(Element e: getChildren())
+		{
+			if(e.inBounds(relativePoint))
+				e.mouseDown(new Point(relativePoint.x+e.getBounds().x,relativePoint.x+e.getBounds().y), absolutePoints);
+				
+		}
+		if(getMouseListener()!= null)
+		{
+			getMouseListener().mouseDown(relativePoint);
+		}
 	}
 	/***
 	 * Occurs on rendering at backend
 	 * @param args
 	 */
-	public abstract void backendRender(Object... args);
+	public void backendRender(Object... args){ 
+		
+	}
 	/**
 	 * Occurs on load
 	 * @param args
 	 */
-	public abstract void onLoad(Object... args);
+	public void onLoad(Object... args){
+		
+	}
+	public void mouseClicked(Point relativePoint, Point absolutePoints) {
+		// TODO Auto-generated method stub
+		for(Element e: getChildren())
+		{
+			if(e.inBounds(relativePoint))
+				e.mouseClicked(new Point(relativePoint.x+e.getBounds().x,relativePoint.x+e.getBounds().y), absolutePoints);
+				
+		}
+		if(getMouseListener()!= null)
+		{
+			getMouseListener().mouseClicked(relativePoint);
+		}
+	}
 	
 }

@@ -5,10 +5,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import javax.swing.JComponent;
-
-import org.omg.CORBA.Bounds;
-
 public class hbox extends Element {
 	
 	@Override
@@ -18,7 +14,10 @@ public class hbox extends Element {
 		drawChildren(g, bounds);
 		
 	}
-
+	public void setFlex(Integer flex)
+	{
+		super.mFlex=flex;
+	}
 	public hbox( SPWebView host) {
 		super(host);
 		// TODO Auto-generated constructor stub
@@ -32,7 +31,6 @@ public class hbox extends Element {
 		super.assignChildren();
 		// TODO Auto-generated method stub
 		int count = this.getChildren().size();
-		int cellWidth = getBounds().width/count;
 		/***
 		 * 1.
 		 * This block of code will decide
@@ -134,7 +132,7 @@ public class hbox extends Element {
 	@Override
 	public void mouseOver(Point relativePoint, Point absolutePoints) {
 		// TODO Auto-generated method stub
-		
+		super.mouseOver(relativePoint, absolutePoints);
 	}
 
 	@Override

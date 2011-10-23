@@ -5,8 +5,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import javax.swing.JComponent;
-
 public class vbox extends Element {
 
 	public vbox(SPWebView host) {
@@ -19,7 +17,6 @@ public class vbox extends Element {
 		// TODO Auto-generated method stub
 		super.assignChildren();
 		int count = this.getChildren().size();
-		int cellWidth = getBounds().width/count;
 		/***
 		 * 1.
 		 * This block of code will decide
@@ -130,14 +127,7 @@ public class vbox extends Element {
 	@Override
 	public void mouseOver(Point relativePoint, Point absolutePoints) {
 		// TODO Auto-generated method stub
-		for(Element e : getChildren())
-		{
-			if(this.childAt(relativePoint) == e)
-			{
-				e.mouseOver(new Point(absolutePoints.x - relativePoint.x,absolutePoints.y - relativePoint.y),relativePoint);
-				
-			}
-		}
+		super.mouseOver(relativePoint, absolutePoints);
 	}
 
 	@Override
