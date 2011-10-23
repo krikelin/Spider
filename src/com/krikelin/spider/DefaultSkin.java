@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
@@ -18,6 +19,11 @@ public class DefaultSkin extends SPSkin {
 	public static final int ICON_START = 28500+0;
 	int num_icons = 3;
 	private Image mSelectionBackground;
+	private Hashtable<String,Image> parts = new Hashtable<String,Image>();
+	public Hashtable<String,Image> getParts()
+	{
+		return parts;
+	}
 	@Override
 	public void drawText(String str,Color colour,Graphics g,int x,int y,boolean shadow)
 	{
@@ -97,20 +103,20 @@ public class DefaultSkin extends SPSkin {
 		// Copy pixels to the buffer
 		
 	
-		bi.getGraphics().drawImage(src, 0,0,width,height,  left,top+4,left+width,top+height,(ImageObserver)null);
+		bi.getGraphics().drawImage(src, 0,0,width,height,  left,top,left+width,top+height,(ImageObserver)null);
 		
 		
 		return bi;
 		
 	}
 	
-	/**
+	/** 
 	 * Public properties
 	 */
 	public static final int IMG_SHADOW = 210081;
 	public static final int IMG_CHEADER = 28100;
 	public DefaultSkin()
-	{
+	{ 
 		/*
 		 * Load the image into the memory and handle it
 		 */
@@ -158,6 +164,11 @@ public class DefaultSkin extends SPSkin {
 			
 			mPlayingEntryBg =getPixel(r,18,0); 
 			mPlayingEntryFg =getPixel(r,19,0);
+			getParts().put("toolbar_left.png", sliceBitmap(r,1,266,97,33));
+			getParts().put("toolbar_left_hover.png", sliceBitmap(r,1,299,97,33));
+			
+			getParts().put("toolbar_middle.png", sliceBitmap(r,131,266,10,33));
+			getParts().put("toolbar_right.png", sliceBitmap(r,148,266,33,33));
 			/**
 			 * Load icons. May change in the future
 			 */
@@ -394,6 +405,12 @@ public class DefaultSkin extends SPSkin {
 						
 			}
 		}
+	}
+	@Override
+	public Image getComponentByName(String name) {
+		// TODO Auto-generated method stub
+		return getParts().get(name);
+	
 	}
  
 }

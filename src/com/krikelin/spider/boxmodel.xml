@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
 	<hbox flex="1">
-		<image src="http://o.scdn.co/image/fd427dc7da8e87cb277505fa9a6495bb314713ff" />
+		<image src="http://o.scdn.co/image/7baf1b768a03b5b70bea94b7264decb69ec71971" width="128" />
 		<vbox flex="1">
-			<text flex="0">test 1</text>
-			<text >test 2</text>
+			<text flex="0"   height="90">Playlist</text>
+			<hbox height="34">
+				<image width="97" flex="0" 
+						src_mousedown="res:toolbar_left.png" 
+						src_mouseover="res:toolbar_left_hover.png" 
+						
+						src="res:toolbar_left.png" />
+				<image flex="1" src="res:toolbar_middle.png" />
+				<image flex="0" width="64" src="res:toolbar_right.png" />
+
+			</hbox>
 			<text flex="1">test x</text>
 		</vbox>
-		<text flex="0" width="100">test3</text>
+		<vbox flex="0" width="50" /> 
+
+		
 	</hbox>
-</document>
+</document> 

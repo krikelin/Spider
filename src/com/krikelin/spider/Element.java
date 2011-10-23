@@ -33,11 +33,11 @@ public class Element {
 	public int getHeight(){
 		return mBounds.height;
 	}
-	public void setWidth(int width)
+	public void setWidth(Integer width)
 	{
 		mBounds = new Rectangle(0,0,width,getHeight());
 	}
-	public void setHeight(int height)
+	public void setHeight(Integer height)
 	{
 		mBounds = new Rectangle(0,0,getWidth(),height);
 	}
@@ -73,7 +73,7 @@ public class Element {
 		mFlex=i;
 	}
 	private ArrayList<Element> mChildren = new ArrayList<Element>();
-	private Rectangle mBounds = new Rectangle();
+	protected Rectangle mBounds = new Rectangle();
 	/***
 	 * Gets the bounds
 	 * @return
@@ -122,15 +122,15 @@ public class Element {
 	 */
 	public void drawChildren(Graphics g,Rectangle bounds)
 	{
+
 		assignChildren();
-		int x = getBounds().x;
-		int y = getBounds().y;
-		g.translate(x, y);
+		
+		
 		for(Element child : mChildren)
 		{
-			child.paint(g, new Rectangle( child.getBounds().x, child.getBounds().y,child.getBounds().width,child.getBounds().height));
+			child.paint(g, new Rectangle(child.getBounds().x, child.getBounds().y,child.getBounds().width,child.getBounds().height));
 		}
-		g.translate(-x, -y);
+	
 	}
 
 	/***
@@ -207,7 +207,8 @@ public class Element {
 		 * @param relativePoint
 		 * @param absolutePoints
 		 */
-		public abstract void mouseOver(Point relativePoint,Point absolutePoints);
+		public abstract void mouseOver(Point absolutePoints);
+		public abstract void mouseUp(Point absolutePoints);
 		/***
 		 * Occurs on mouse down
 		 * @param relativePoint
@@ -269,34 +270,57 @@ public class Element {
 	 * @param relativePoint
 	 * @param absolutePoints
 	 */
-	public void mouseOver(Point relativePoint,Point absolutePoints){
+	public void mouseOver(Point absolutePoints){
 		assignChildren();
 		for(Element e: getChildren())
 		{
-			if(e.inBounds(relativePoint))
-				e.mouseOver(new Point(relativePoint.x+e.getBounds().x,relativePoint.x+e.getBounds().y), absolutePoints);
+			if(e.inBounds(absolutePoints))
+				e.mouseOver(absolutePoints);
+			else
+				e.MouseLeave(absolutePoints);
 				
 		}
 		if(getMouseListener()!= null)
 		{
-			getMouseListener().mouseOver(relativePoint, absolutePoints);
+			getMouseListener().mouseOver(absolutePoints);
 		}
 	}
-	
+	protected void MouseLeave(Point absolutePoints) {
+		// TODO Auto-generated method stub
+		
+	}
+	/**
+	 * Occurs when mouse is over the element
+	 * @param relativePoint
+	 * @param absolutePoints
+	 */
+	public void mouseUp(Point absolutePoints){
+		assignChildren();
+		for(Element e: getChildren())
+		{
+			if(e.inBounds(absolutePoints))
+				e.mouseOver(absolutePoints);
+				
+		}
+		if(getMouseListener()!= null)
+		{
+			getMouseListener().mouseOver(absolutePoints);
+		}
+	}
 	/***
 	 * Occurs on mouse down
 	 * @param relativePoint
 	 */
-	public void mouseDown(Point relativePoint,Point absolutePoints){
+	public void mouseDown(Point absolutePoints){
 		for(Element e: getChildren())
 		{
-			if(e.inBounds(relativePoint))
-				e.mouseDown(new Point(relativePoint.x+e.getBounds().x,relativePoint.x+e.getBounds().y), absolutePoints);
+			if(e.inBounds(new Point(absolutePoints)))
+				e.mouseDown( absolutePoints);
 				
 		}
 		if(getMouseListener()!= null)
 		{
-			getMouseListener().mouseDown(relativePoint);
+			getMouseListener().mouseDown(absolutePoints);
 		}
 	}
 	/***
@@ -313,17 +337,17 @@ public class Element {
 	public void onLoad(Object... args){
 		
 	}
-	public void mouseClicked(Point relativePoint, Point absolutePoints) {
+	public void mouseClicked(Point absolutePoints) {
 		// TODO Auto-generated method stub
 		for(Element e: getChildren())
 		{
-			if(e.inBounds(relativePoint))
-				e.mouseClicked(new Point(relativePoint.x+e.getBounds().x,relativePoint.x+e.getBounds().y), absolutePoints);
+			if(e.inBounds(absolutePoints))
+				e.mouseClicked(absolutePoints);
 				
 		}
 		if(getMouseListener()!= null)
 		{
-			getMouseListener().mouseClicked(relativePoint);
+			getMouseListener().mouseClicked(absolutePoints);
 		}
 	}
 	

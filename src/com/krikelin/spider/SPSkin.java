@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.util.Hashtable;
 
 
 
@@ -15,6 +17,12 @@ public abstract class SPSkin {
 	public static final int IMG_VERTICAL_DIVIDER = 280052;
 	public static final int IMG_VERTICAL_DIVIDER_FG = 280086;
 	
+	/**
+	 * Gets component by name
+	 * @param name
+	 * @return
+	 */
+	public abstract Image getComponentByName(String name);
 	public abstract Color getPlayingBg();
 	public abstract Color getPlayingFg();
 	public static final int MODE_NORMAL = 2000; 

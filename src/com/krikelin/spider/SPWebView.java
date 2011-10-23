@@ -46,7 +46,7 @@ public class SPWebView extends JComponent {
 		if(getElements().size()> 0)
 		{
 			Element c = getElements().get(0);
-		
+			
 			
 		
 			
@@ -113,13 +113,17 @@ public class SPWebView extends JComponent {
 		
 			try {
 				Element _elm = (Element)Class.forName("com.krikelin.spider."+elm.getTagName().toLowerCase()).getConstructors()[0].newInstance(this);
-				
+			
 				for(int i=0; i <elm.getAttributes().getLength(); i++)
 				{
 					Node attrib = elm.getAttributes().item(i);
 					String val = attrib.getNodeValue();
 					String attribute = attrib.getNodeName();
 					String methodName = capitalize(attribute).trim();
+					if(attribute.startsWith("src"))
+					{
+						int ec = 3;
+					}
 					try
 					{
 						
@@ -157,19 +161,26 @@ public class SPWebView extends JComponent {
 					
 				}
 				NodeList childNodes = elm.getChildNodes();
-				for(int j=0; j < childNodes.getLength(); j++)
+				int length = childNodes.getLength();
+				for(int j=0; j < length; j++)
 				{
+					
 					Node welm = childNodes.item(j);
+					Node parent = welm.getParentNode();
+					
 					if(welm instanceof org.w3c.dom.Element)
 					{
+						if(welm.getParentNode()!=(elm))
+							continue;
 						Element f = deserialize(welm);
 						if(f != null)
 						{
-							f.setBounds(new Rectangle(0,0,_elm.getWidth(),_elm.getHeight()));
+				//			f.setBounds(new Rectangle(0,0,_elm.getWidth(),_elm.getHeight()));
 							_elm.getChildren().add(f);
 						}
 					}
 					}
+				_elm.onLoad((Object[])null);
 				return _elm;
 			} catch (InstantiationException e) {
 				// TODO Auto-generated catch block
@@ -258,6 +269,7 @@ public class SPWebView extends JComponent {
 		mSkin = new DefaultSkin();
 		setBackground(mSkin.getBackgroundColor());
 		//setBackground(mContext.getSkin().getBackgroundColor());
+	
 		addMouseMotionListener(new MouseMotionListener() {
 			
 			@Override
@@ -265,7 +277,7 @@ public class SPWebView extends JComponent {
 				// TODO Auto-generated method stub
 				for(Element elm : getElements())
 				{
-					elm.mouseOver(new Point(e.getPoint().x + elm.getBounds().x,e.getPoint().y + elm.getBounds().y), e.getPoint());
+					elm.mouseOver( e.getPoint());
 					
 				}
 			}
@@ -285,9 +297,14 @@ public class SPWebView extends JComponent {
 			}
 			
 			@Override
-			public void mousePressed(MouseEvent arg0) {
+			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+				// TODO Auto-generated method stub
+				for(Element elm : getElements())
+				{
+					elm.mouseDown( e.getPoint());
+					
+				}
 			}
 			
 			@Override
@@ -307,7 +324,7 @@ public class SPWebView extends JComponent {
 				// TODO Auto-generated method stub
 				for(Element elm : getElements())
 				{
-					elm.mouseClicked(new Point(e.getPoint().x + elm.getBounds().x,e.getPoint().y + elm.getBounds().y), e.getPoint());
+					elm.mouseClicked(e.getPoint());
 				}
 			}
 		});

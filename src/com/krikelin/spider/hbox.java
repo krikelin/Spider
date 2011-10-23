@@ -7,6 +7,9 @@ import java.util.ArrayList;
 
 public class hbox extends Element {
 	
+	/* (non-Javadoc)
+	 * @see com.krikelin.spider.Element#paint(java.awt.Graphics, java.awt.Rectangle)
+	 */
 	@Override
 	public void paint(Graphics g, Rectangle bounds) { 
 		// TODO Auto-generated method stub
@@ -45,7 +48,7 @@ public class hbox extends Element {
 		int preFlex = 0;
 		for(int i=0; i < count ;i++)
 		{
-			Element elm = getChildren().get(i);
+			Element elm = getChildren().get(i); 
 			if(elm.getFlex() != preFlex)
 			{
 				sts++;
@@ -62,6 +65,7 @@ public class hbox extends Element {
 				break;
 			case 2:
 				staticLastElements.add(elm);
+				break;
 			}
 		}
 		/***
@@ -73,11 +77,13 @@ public class hbox extends Element {
 		{
 			leftWidth+=e.getBounds().width;
 		}
-		int rightWidth = 0;
+	
+		int rightWidth = 0; 
 		for(Element e: staticLastElements)
 		{
 			rightWidth+=e.getBounds().width;
 		}
+	
 		/**
 		 * Upon this, calculate the dynamic block sizes
 		 */
@@ -91,26 +97,30 @@ public class hbox extends Element {
 		// Then assign the proportions of the left page
 		for(Element elm : staticFirstElements)
 		{
-			elm.setBounds(new Rectangle(left+getPadding(),getPadding(),elm.getBounds().width-getPadding()*2,getBounds().height-getPadding()*2));
+			elm.setBounds(new Rectangle(getBounds().x+left+getPadding(),getBounds().y+getPadding(),elm.getBounds().width-getPadding()*2,getBounds().height-getPadding()*2));
 			left += elm.getBounds().width;
 		}
+		int elmWidth = 0;
+		if(dynamicMiddle.size() > 0)
+			elmWidth = space /(dynamicMiddle.size() );
 		int right = getBounds().width;
 		// Then assign the proportions of the right page
+		int rsize= 0 ;
 		for(int x= 0; x < staticLastElements.size(); x++)
 		{
 			
 			Element elm = staticLastElements.get(staticLastElements.size()-1-i);
 			right -= elm.getBounds().width -getPadding()*2;
-			elm.setBounds(new Rectangle(right+getPadding(),getPadding(),elm.getBounds().width-getPadding()*2,getBounds().height-getPadding()*2));
+			rsize += elm.getWidth();
+			elm.setBounds(new Rectangle(getBounds().x+right+getPadding(),getBounds().y+getPadding(),elm.getBounds().width-getPadding()*2,getBounds().height-getPadding()*2));
+			
 		}
 		
-		int elmWidth = 0;
-		if(dynamicMiddle.size() > 0)
-			elmWidth = space /dynamicMiddle.size();
-		space = right - space;
+		
+	//	space = getBounds().width -( leftWidth + rightWidth);
 		for(Element elm : dynamicMiddle)
 		{
-			elm.setBounds(new Rectangle(left+elmWidth*i+getPadding(),getPadding(),elmWidth-getPadding()*2,getBounds().height-getPadding()*2));
+			elm.setBounds(new Rectangle(getBounds().x+leftWidth+elmWidth*i+getPadding(),getBounds().y+getPadding(),elmWidth-getPadding()*2,getBounds().height-getPadding()*2));
 			
 			i++;
 		}
@@ -127,18 +137,21 @@ public class hbox extends Element {
 		// TODO Auto-generated method stub
 		
 	}
-
-
 	@Override
-	public void mouseOver(Point relativePoint, Point absolutePoints) {
+	public void setHeight(Integer height)
+	{ 
+		super.mBounds = new Rectangle(0,0,getWidth(),height);
+	}
+	@Override
+	public void mouseOver(Point absolutePoints) {
 		// TODO Auto-generated method stub
-		super.mouseOver(relativePoint, absolutePoints);
+		super.mouseOver(absolutePoints);
 	}
 
 	@Override
-	public void mouseDown(Point relativePoint,Point absolutePoint) {
+	public void mouseDown(Point absolutePoint) {
 		// TODO Auto-generated method stub
-		
+		super.mouseDown(absolutePoint);
 	}
 
 	@Override

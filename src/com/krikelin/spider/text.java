@@ -19,6 +19,11 @@ public class text extends Element {
 	public void assignChildren() {
 		// TODO Auto-generated method stub
 		
+	} 
+	@Override
+	public void setHeight(Integer height)
+	{
+		mBounds = new Rectangle(0,0,getWidth(),height);
 	}
 	@Override
 	public void setFlex(Integer flex)
@@ -41,12 +46,11 @@ public class text extends Element {
 		super.paint(g, bounds);
 		if(mText == null)
 			return;
-		int x = 0,y = 0;
+		int x = getBounds().x,y = getBounds().y + 15;
 		String buffer = mText;
-		g.translate(bounds.x, bounds.y);
 		for(int i=0; i < buffer.length(); i++)
 		{
-			int wid = getBounds().width;
+			int wid = bounds.width;
 			// bounds for the current character
 			Rectangle2D strBounds = g.getFontMetrics().getStringBounds(new char[]{buffer.charAt(i)},0,1, g);
 			if(i < buffer.length()-1)
@@ -55,7 +59,7 @@ public class text extends Element {
 				if(buffer.charAt(i+1 )== '\n' || x >=  wid - getPadding()*2)
 				{
 					y += strBounds.getHeight();
-					x = 0;
+					x = getBounds().x;
 				}
 			}
 			char character = buffer.charAt(i);
@@ -64,7 +68,6 @@ public class text extends Element {
 			getHost().getSkin().drawText(String.valueOf(character), getHost().getSkin().getForeColor(), g, x, y+20, true);
 			x += strBounds.getWidth();
 		}
-		g.translate(-bounds.x, -bounds.y);
 	}
 
 	@Override
@@ -80,10 +83,13 @@ public class text extends Element {
 	}
 
 	@Override
-	public void mouseOver(Point relativePoint, Point absolutePoints) {
+	public void mouseOver(Point absolutePoints) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	
+
 
 	@Override
 	public void backendRender(Object... args) {

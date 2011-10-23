@@ -15,7 +15,7 @@ public class vbox extends Element {
 	@Override
 	public void assignChildren() {
 		// TODO Auto-generated method stub
-		super.assignChildren();
+	//	super.assignChildren();
 		int count = this.getChildren().size();
 		/***
 		 * 1.
@@ -73,18 +73,19 @@ public class vbox extends Element {
 		int elmHeight = 0;
 		try
 		{
-			elmHeight = space /dynamicMiddle.size();
+			elmHeight = space /dynamicMiddle.size()+1;
 		}
+		
 		catch(Exception e)
 		{
 			
 		}
-		
+		space += elmHeight;
 		int top=0;
 		// Then assign the proportions of the left page
 		for(Element elm : staticFirstElements)
 		{
-			elm.setBounds(new Rectangle(getPadding(),top+getPadding(),getBounds().width-getPadding()*2,elm.getBounds().height-getPadding()*2));
+			elm.setBounds(new Rectangle(getBounds().x+getPadding(),getBounds().y+top+getPadding(),getBounds().width-getPadding()*2,elm.getBounds().height-getPadding()*2));
 			top += elm.getBounds().height + getPadding();
 		}
 		// Then assign the proportions of the right page
@@ -93,13 +94,13 @@ public class vbox extends Element {
 			
 			Element elm = staticLastElements.get(staticLastElements.size()-1-x);
 			top -= elm.getBounds().height - getPadding()*2;
-			elm.setBounds(new Rectangle(0,getBounds().height-top,getBounds().width-getPadding()*2,elm.getBounds().height-getPadding()*2));
+			elm.setBounds(new Rectangle(getBounds().x+getPadding(),getBounds().y+getBounds().height-top,getBounds().width-getPadding()*2,elm.getBounds().height-getPadding()*2));
 		}
 		// Then assign the width to the children
 		int i=0;
 		for(Element elm : dynamicMiddle)
 		{
-			elm.setBounds(new Rectangle(getPadding(),leftHeight+elmHeight*i+getPadding(),getBounds().width-getPadding()*2,elmHeight-getPadding()*2));
+			elm.setBounds(new Rectangle(getBounds().x+getPadding(),getBounds().y+leftHeight+elmHeight*i+getPadding(),getBounds().width-getPadding()*2,elmHeight-getPadding()*2));
 			
 			i++;
 		}
@@ -125,25 +126,22 @@ public class vbox extends Element {
 	}
 
 	@Override
-	public void mouseOver(Point relativePoint, Point absolutePoints) {
+	public void mouseOver(Point absolutePoints) {
 		// TODO Auto-generated method stub
-		super.mouseOver(relativePoint, absolutePoints);
+		super.mouseOver(absolutePoints);
 	}
 
 	@Override
-	public void mouseDown(Point relativePoint,Point absolutePoint) {
+	public void mouseDown(Point absolutePoint) {
 		// TODO Auto-generated method stub
-		super.mouseDown(relativePoint,absolutePoint);
-		for(Element e : getChildren())
-		{
-			if(this.childAt(relativePoint) == e)
-			{
-				e.mouseDown(new Point(absolutePoint.x - relativePoint.x,absolutePoint.y - relativePoint.y),relativePoint);
-				
-			}
-		}
+		super.mouseDown(absolutePoint);
+		
 	}
-
+	@Override
+	public void setHeight(Integer height)
+	{
+		mBounds = new Rectangle(0,0,getWidth(),height);
+	}
 	@Override
 	public void backendRender(Object... args) {
 		// TODO Auto-generated method stub
