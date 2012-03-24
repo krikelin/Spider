@@ -280,22 +280,13 @@ public class SPWebView extends JComponent {
 	}
 	*
 	*/
-	public void loadMarkup(InputStream in,Object vars)
+	public void loadMarkup(String string,Object vars)
 	{
 	
 		try {
-			PythonInterpreter interpreter = new PythonInterpreter();
-	        interpreter.exec("from mako.template import Template");
-	        PyObject buildingClass = interpreter.get("Template"); 
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        PyObject instance = buildingClass.__call__(new PyString(convertStreamToString(in)));
-	         interpreter.set("datax",vars);
-	         interpreter.setOut(baos) ;
-	         
-	         // invoke the string
-	         interpreter.set("invoker", instance);
-	         interpreter.exec("print invoker.render(data=datax)");
-	         String parsedData = new String(baos.toByteArray(), "ISO-8859-1");
+			MakoEngine me = new MakoEngine();
+			me.preprocess(string, "a",false, "sp", false);
+	         String parsedData = me.output;
 	         
 			DOMParser parser = new DOMParser();
 			parser.parse(new InputSource(new StringReader(parsedData)));
