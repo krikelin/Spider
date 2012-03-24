@@ -1,11 +1,27 @@
 package com.krikelin.spider;
 
-public class LuaEngine implements IScriptEngine {
+import org.keplerproject.luajava.JavaFunction;
+import org.keplerproject.luajava.LuaException;
+import org.keplerproject.luajava.LuaJavaAPI;
+import org.keplerproject.luajava.LuaObject;
+import org.keplerproject.luajava.LuaState;
+import org.keplerproject.luajava.LuaStateFactory;
 
+public class LuaEngine implements IScriptEngine {
+	LuaObject baseObject;
+	LuaState L = LuaStateFactory.newLuaState();
+	
+	public LuaEngine() {
+		
+	 
+	    
+	   
+	}
 	@Override
 	public String run(String scriptCode) {
 		// TODO Auto-generated method stub
-		return null;
+		 L.LdoString(scriptCode);
+		return L.getLuaObject("spider").call(new Object(){});
 	}
 
 	@Override
@@ -21,9 +37,9 @@ public class LuaEngine implements IScriptEngine {
 	}
 
 	@Override
-	public void setFunction(String functionName, Delegate functionPointer) {
+	public void setFunction(String functionName, final Delegate functionPointer) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }
