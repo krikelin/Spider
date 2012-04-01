@@ -87,10 +87,10 @@ public class MakoEngine
             int startIndex = IndexOf + 2;
 
             // Get the data inside the token
-            String Parseable = Line.substring(startIndex,  endToken -  startIndex);
+            String Parseable = Line.substring(startIndex,  endToken );
 
             // Convert the inline token to concation
-            Line = Line.replace("@{" + Parseable + "}",  "\" + ( "  + Parseable + " ) + \"");
+            Line = Line.replace("${" + Parseable + "}",  "\" ..  "  + Parseable + "  .. \"");
             IndexOf = endToken;
            
         }
@@ -376,7 +376,7 @@ public class MakoEngine
                     outputCode.append(input.charAt(i));
                     // Format output code (Replace " to ¤ and swap back on preprocessing)
                     String OutputCode = outputCode.toString().replace("\"", "¤").replace("\n", "%BR%\");\n" + getPrintMethod() + "(\"");
-                    OutputCode = this.handleToTokens(OutputCode.toString(),'@');
+                    OutputCode = this.handleToTokens(OutputCode.toString(),'$');
                     finalOutput.append("" + getPrintMethod() + "(\"" + OutputCode + "\");");
                    
                 }
@@ -389,7 +389,7 @@ public class MakoEngine
 
                         // Convert tokens to interpretable handles
                         String OutputCode = outputCode.toString().replace("\"", "¤").replace("\n", "%BR%\");\n" + getPrintMethod() + "(\"");
-                        OutputCode = this.handleToTokens(OutputCode.toString(), '@');
+                        OutputCode = this.handleToTokens(OutputCode.toString(), '$');
                         finalOutput.append("" + getPrintMethod() + "(\"" + OutputCode + "\");");
 
                         // Clear the output code buffer

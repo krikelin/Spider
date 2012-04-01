@@ -1,20 +1,24 @@
 <?
-data = {}
+data = {
+	name = "Jobbarnas lista",
+	description = "Arbetarbladets lista",
+	coverArt = ""
+}
 
 ?>
 <document>	
 	<vbox flex="1">
 		<hbox height="128">
-			<image src="${img_url}" width="128" />
+			<image src="${data.coverArt}" width="128" />
 			<vbox flex="1">
-				<text flex="0"   height="30">${test}</text>
+				<text flex="0"   height="30">${data.name}</text>
 				<hbox height="34">
 					<image width="6" flex="0" src="res:toolbar_left.png" 	/>
 					<image flex="1" src="res:toolbar_middle.png" />
 					<image flex="0" width="6" src="res:toolbar_right.png" />
 	
 				</hbox>
-				<text flex="1">test x</text>
+				<text flex="1">${data.description}</text>
 			</vbox>
 			<vbox flex="0" width="150" >
 			
