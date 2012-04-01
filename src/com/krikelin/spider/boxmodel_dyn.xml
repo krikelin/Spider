@@ -3,9 +3,9 @@
 		<hbox height="128">
 			<image src="http://o.scdn.co/image/7baf1b768a03b5b70bea94b7264decb69ec71971" width="128" />
 			<vbox flex="1">
-				<text flex="0"   height="30">Playlist</text>
-				<hbox height="34">
-					<image width="97" flex="0" 
+				<text flex="0"   height="64">Playlist</text>
+				<hbox height="64">
+					<image width="6" flex="0" 
 							src_mousedown="res:toolbar_left.png" 
 							src_mouseover="res:toolbar_left_hover.png" 
 							
@@ -22,4 +22,4 @@
 		</hbox>
 		<hbox flex="1"></hbox>
 	</vbox>
-</document> 
+</document>  

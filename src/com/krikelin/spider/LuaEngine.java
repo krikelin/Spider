@@ -19,6 +19,7 @@ import javax.script.SimpleScriptContext;
 
 import org.keplerproject.luajava.JavaFunction;
 import org.keplerproject.luajava.LuaException;
+import org.keplerproject.luajava.LuaObject;
 import org.keplerproject.luajava.LuaState;
 import org.keplerproject.luajava.LuaStateFactory;
 
@@ -44,6 +45,33 @@ public class LuaEngine implements IScriptEngine {
 	
 	public LuaEngine(MakoEngine context) {
 		this.context = context;
+		L.newTable();
+		L.openLibs();
+		
+		try {
+			JavaFunction func = new JavaFunction(L) {
+				
+				@Override
+				public int execute() throws LuaException {
+					StringBuilder sb = new StringBuilder();
+			        for (int i = 2; i <= L.getTop(); i++) {
+			            int type = L.type(i);
+			            String val = L.toString(i);
+			            if (val == null)
+			                val = L.typeName(type);
+			            sb.append(val);
+			            sb.append("\t");
+			        }
+			        sb.append("\n");
+			       LuaEngine.this.output += (sb.toString());
+					return 0;
+				}
+			};
+			func.register("__printx");
+		} catch (LuaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public Writer writer = new Writer() {
 
@@ -81,10 +109,10 @@ public class LuaEngine implements IScriptEngine {
 		try {
 			final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
 			System.setOut(new PrintStream(myOut));
-			
-			L.LdoString(output);
-			
-			 String f =  output;
+			scriptCode = "sys = luajava.bindClass(\"java.lang.System\")\n" + scriptCode;
+			int x = L.LdoString(scriptCode);
+	
+			 String f =  output.replace("%BR%","\n").replace("¤","\"");
 			 
 			 output = "";
 			 f.replace("¤Ä","\"").replace("%BR%", "\n");

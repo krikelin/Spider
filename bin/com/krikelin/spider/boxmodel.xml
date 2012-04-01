@@ -3,24 +3,15 @@ data = {}
 
 ?>
 <document>	
-	<style>
-		e {
-			
-		}
-	</style>
 	<vbox flex="1">
 		<hbox height="128">
 			<image src="${img_url}" width="128" />
 			<vbox flex="1">
 				<text flex="0"   height="30">${test}</text>
 				<hbox height="34">
-					<image width="97" flex="0" 
-							src="res:toolbar_left.png" 
-							
-							
-							src="res:toolbar_left.png" />
+					<image width="6" flex="0" src="res:toolbar_left.png" 	/>
 					<image flex="1" src="res:toolbar_middle.png" />
-					<image flex="0" width="64" src="res:toolbar_right.png" />
+					<image flex="0" width="6" src="res:toolbar_right.png" />
 	
 				</hbox>
 				<text flex="1">test x</text>
@@ -30,5 +21,5 @@ data = {}
 			</vbox>
 		</hbox>
 		<hbox flex="1"></hbox>
-	</vbox>
-</document> 
+	</vbox> 
+</document>  

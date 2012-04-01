@@ -422,7 +422,13 @@ public class DefaultSkin extends SPSkin {
 	@Override
 	public Image getComponentByName(String name) {
 		// TODO Auto-generated method stub
-		return getParts().get(name);
+		try {
+			return ImageIO.read(getClass().getResourceAsStream(name));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 
 	}
  

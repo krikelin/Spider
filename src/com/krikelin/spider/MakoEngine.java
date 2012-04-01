@@ -487,6 +487,6 @@ public class MakoEngine
 		
 		
 		// TODO Auto-generated method stub
-		return "luajava.bindClass(\"java.lang.System\"):out:println";
+		return "__printx";
 	}
 }
