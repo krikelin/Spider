@@ -1,5 +1,6 @@
 package com.krikelin.spider;
 
+import java.io.Console;
 import java.util.Hashtable;
 
 import sun.misc.Regexp;
@@ -36,7 +37,7 @@ public class MakoEngine
     public MakoEngine()
     {
         // Initialize runtime engine. For now we use JavaScriptEngine
-        runtimeMachine = new LuaEngine();
+        runtimeMachine = new LuaEngine(this);
 
         // Set JSPython to try as default
        // JSPython = true;
@@ -158,7 +159,7 @@ public class MakoEngine
                 String[] c = Variable.split(reflector)[1].split(divider);
 
                 // Return the decition
-                String output =  (boolean)d ? c[0] : c[1];
+                String output =  (Boolean)d ? c[0] : c[1];
                 return new String[] { Codebase, output };
             }
             else
@@ -325,7 +326,7 @@ public class MakoEngine
                     // Get the final output
                     String codeOutput = executableSegment.toString();
                     // If in JSPython mode, convert all row breaks to ; and other syntax elements
-                    if (JSPython)
+                    if (false)
                     {
                         codeOutput = codeOutput.replace("\n", ";");
                         
@@ -374,22 +375,22 @@ public class MakoEngine
                     // Append the last String
                     outputCode.append(input.charAt(i));
                     // Format output code (Replace " to ¤ and swap back on preprocessing)
-                    String OutputCode = outputCode.toString().replace("\"", "¤").replace("\n", "%BR%\");\n__printx(\"");
+                    String OutputCode = outputCode.toString().replace("\"", "¤").replace("\n", "%BR%\");\n" + getPrintMethod() + "(\"");
                     OutputCode = this.handleToTokens(OutputCode.toString(),'@');
-                    finalOutput.append("__printx(\"" + OutputCode + "\");");
+                    finalOutput.append("" + getPrintMethod() + "(\"" + OutputCode + "\");");
                    
                 }
                 try
                 {
-                    if (((input.charAt(i) == '\n' && input.charAt(i+1)== '%')) || (input.charAt(i)== '<' && input.charAt(i)== '?'))
+                    if (((input.charAt(i) == '\n' && input.charAt(i+1)== '%')) || (input.charAt(i)== '<' && input.charAt(i+1)== '?'))
                     {
                         startCase = (input.charAt(i) == '<' &&input.charAt(i+1)== '?');
                         codeMode = true;
 
                         // Convert tokens to interpretable handles
-                        String OutputCode = outputCode.toString().replace("\"", "¤").replace("\n", "%BR%\");\n__printx(\"");
+                        String OutputCode = outputCode.toString().replace("\"", "¤").replace("\n", "%BR%\");\n" + getPrintMethod() + "(\"");
                         OutputCode = this.handleToTokens(OutputCode.toString(), '@');
-                        finalOutput.append("__printx(\"" + OutputCode + "\");");
+                        finalOutput.append("" + getPrintMethod() + "(\"" + OutputCode + "\");");
 
                         // Clear the output code buffer
                         outputCode = new StringBuilder();
@@ -416,7 +417,7 @@ public class MakoEngine
             CallStack += "\");";
         }
         // Run the code
-        runtimeMachine.setFunction("__printx",new Delegate() {
+        runtimeMachine.setFunction("" + getPrintMethod() + "",new Delegate() {
 
 			@Override
 			public boolean invoke(Object... args) {
@@ -437,14 +438,14 @@ public class MakoEngine
         CallStack = finalOutput.toString();
        
         CallStack = CallStack.replace("\r", "");
-        if(this.onlyPreprocess) {
+        if(!this.onlyPreprocess) {
             /***
              * Try run the page. If there was error return ERROR: <error> message so the
              * handler can choose to present it to the user
              * */
             try
             {
-                runtimeMachine.run(CallStack);
+            	this.output = runtimeMachine.run(CallStack);
 
                 /**
                  * Check if the result of the preprocessing is the same as before. If nothing
@@ -467,7 +468,7 @@ public class MakoEngine
                 {
                     String errorView = new MakoEngine().Preprocess(SR.ReadToEnd(), "", false, "", true);
                     runtimeMachine = new JavaScriptEngine();
-                    runtimeMachine.SetFunction("__printx", new Func<String, Object>(__printx));
+                    runtimeMachine.SetFunction("" + getPrintMethod() + "", new Func<String, Object>(" + getPrintMethod() + "));
                     runtimeMachine.SetVariable("error", e.toString() + "\n " );
 
                     runtimeMachine.run((errorView));
@@ -482,4 +483,10 @@ public class MakoEngine
         }
 
     }
+	private String getPrintMethod() {
+		
+		
+		// TODO Auto-generated method stub
+		return "luajava.bindClass(\"java.lang.System\"):out:println";
+	}
 }

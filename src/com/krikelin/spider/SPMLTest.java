@@ -1,6 +1,7 @@
 package com.krikelin.spider;
 
 import java.io.InputStream;
+import java.util.Scanner;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -52,13 +53,13 @@ public class SPMLTest {
 		return box;
 		
 	}
-	@SuppressWarnings("deprecation")
 	public static void main(String[] args){
 		JFrame frame = new JFrame();
 		JComponent sw = null;
 		SPWebView webview = new SPWebView(sw);
 		InputStream stream = SPMLTest.class.getResourceAsStream("boxmodel.xml");
-		webview.loadMarkup(stream, null);
+		String c = new Scanner(stream).useDelimiter("\\A").next();
+		webview.loadMarkup(c, null);
 		frame.add(webview);
  		frame.show(); 
 	} 

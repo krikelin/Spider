@@ -287,7 +287,7 @@ public class SPWebView extends JComponent {
 			MakoEngine me = new MakoEngine();
 			me.preprocess(string, "a",false, "sp", false);
 	         String parsedData = me.output;
-	         
+	          
 			DOMParser parser = new DOMParser();
 			parser.parse(new InputSource(new StringReader(parsedData)));
 			Document c = parser.getDocument();
