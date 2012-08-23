@@ -23,15 +23,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JComponent;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.python.antlr.PythonParser.not_test_return;
-import org.python.apache.xerces.parsers.DOMParser;
-import org.python.core.PyClass;
-import org.python.core.PyObject;
-import org.python.core.PyString;
-import org.python.util.PythonInterpreter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -280,17 +275,26 @@ public class SPWebView extends JComponent {
 	}
 	*
 	*/
+	private String template = "";
+	public void updateObject(Object obj) {
+		loadMarkup(this.template, obj);
+	}
 	public void loadMarkup(String string,Object vars)
 	{
-	
-		try {
+		this.template = string;
+		try { 
 			MakoEngine me = new MakoEngine();
 			me.preprocess(string, "a",false, "sp", false);
-	         String parsedData = me.output;
-	          
-			DOMParser parser = new DOMParser();
-			parser.parse(new InputSource(new StringReader(parsedData)));
-			Document c = parser.getDocument();
+	        String parsedData = me.output;
+	        System.out.println("A" + parsedData);   
+	        DocumentBuilderFactory builderFactory =
+	        	        DocumentBuilderFactory.newInstance();
+	        
+	        DocumentBuilder builder = builderFactory.newDocumentBuilder();
+	    	Document c = builder.parse(new InputSource(new StringReader(parsedData)));
+	
+	        
+			
 			Element elm = deserialize(c);
 			getElements().add(elm);
 			elm.setBounds(new Rectangle(0,0,getWidth(),getHeight()));
@@ -301,6 +305,9 @@ public class SPWebView extends JComponent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

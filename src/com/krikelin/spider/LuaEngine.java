@@ -20,15 +20,9 @@ import javax.script.SimpleScriptContext;
 import org.keplerproject.luajava.JavaFunction;
 import org.keplerproject.luajava.LuaException;
 import org.keplerproject.luajava.LuaObject;
-import org.keplerproject.luajava.LuaState;
+import org.keplerproject.luajava.LuaState; 
 import org.keplerproject.luajava.LuaStateFactory;
 
-import sun.org.mozilla.javascript.internal.Delegator;
-
-
-
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
-import com.sun.xml.internal.org.jvnet.staxex.NamespaceContextEx.Binding;
 
 public class LuaEngine implements IScriptEngine {
 	private MakoEngine context;
@@ -94,7 +88,6 @@ public class LuaEngine implements IScriptEngine {
 		}
 		
 	};
-	Hashtable bindings = new Hashtable();
 	ScriptContext c = new SimpleScriptContext() {
 		@Override
 		public Writer getWriter() {

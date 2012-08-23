@@ -1,29 +1,35 @@
-<?
+<%
 data = {
-	name = "Jobbarnas lista",
-	description = "Arbetarbladets lista",
-	coverArt = ""
+	{
+		title = "Test",
+		text = "Mother fucking do",
+		author = {
+			title = "a"
+		}
+	},
+	{
+		title = "Atomic bomb soon will blow",
+		text = "Iran soon to blow the atomic bombs",
+		author = {
+			title  = "tester"
+		}
+	}
 }
-
-?>
+%>
 <document>	
-	<vbox flex="1">
-		<hbox height="128">
-			<image src="${data.coverArt}" width="128" />
-			<vbox flex="1">
-				<text flex="0"   height="30">${data.name}</text>
-				<hbox height="34">
-					<image width="6" flex="0" src="res:toolbar_left.png" 	/>
-					<image flex="1" src="res:toolbar_middle.png" />
-					<image flex="0" width="6" src="res:toolbar_right.png" />
-	
-				</hbox>
-				<text flex="1">${data.description}</text>
-			</vbox>
-			<vbox flex="0" width="150" >
-			
-			</vbox>
-		</hbox>
-		<hbox flex="1"></hbox>
-	</vbox> 
-</document>  
+	<hbox>
+		<vbox>
+		</vbox>
+		<vbox flex="1">
+			<%
+			for i, data in ipairs(data) do
+			%>
+			<text height="10" width="100%">${data.title}</text>
+			<text height="150" width="100%">${data.text}</text>
+			<%
+			end
+			%>
+		
+		</vbox> 
+	</hbox>
+</document>   

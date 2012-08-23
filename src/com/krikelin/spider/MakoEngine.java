@@ -3,9 +3,6 @@ package com.krikelin.spider;
 import java.io.Console;
 import java.util.Hashtable;
 
-import sun.misc.Regexp;
-import sun.org.mozilla.javascript.internal.Delegator;
-
 /// <summary>
 /// This is an simple MakoEngine implementation for Jint.
 /// Used to minic the Spotify's view engine.
@@ -177,7 +174,7 @@ public class MakoEngine
             * */
       
         // Output data
-        Object _output = runtimeMachine.run("return " + Variable + ";");
+        Object _output = runtimeMachine.run("return " + Variable + "");
         if (_output instanceof String)
         {
             return new String[]{Variable,(String)_output};
@@ -255,7 +252,7 @@ public class MakoEngine
         }
 
         // Remove unwanted trailings
-        Regexp a = new Regexp("<\\#[^\\#]*\\#>");
+        // Regexp a = new Regexp("<\\#[^\\#]*\\#>");
     //    input = a.replace(input, "");
       
 
@@ -315,7 +312,8 @@ public class MakoEngine
              // Check if at an overgoing to an code block
             if(codeMode)
             {
-                if((startCase && input.charAt(i) == '?' && input.charAt(i+1) == '>') ||( input.charAt(i) == '\n' && !startCase))
+            	char c = input.charAt(i) ;
+                if((!startCase && input.charAt(i) == '%' && input.charAt(i+1) == '>') ||( input.charAt(i) == '\n' && startCase))
                 {
                     codeMode=false;
 
@@ -362,7 +360,7 @@ public class MakoEngine
 
                     // Clear outputcode buffer
                     executableSegment = new StringBuilder();
-
+                    i+=1;
                     continue;
                 }
                 executableSegment.append(input.charAt(i));
@@ -375,22 +373,22 @@ public class MakoEngine
                     // Append the last String
                     outputCode.append(input.charAt(i));
                     // Format output code (Replace " to ¤ and swap back on preprocessing)
-                    String OutputCode = outputCode.toString().replace("\"", "¤").replace("\n", "%BR%\");\n" + getPrintMethod() + "(\"");
+                    String OutputCode = outputCode.toString().replace("\"", "¤").replace("\n", "%BR%\")\n" + getPrintMethod() + "(\"");
                     OutputCode = this.handleToTokens(OutputCode.toString(),'$');
-                    finalOutput.append("" + getPrintMethod() + "(\"" + OutputCode + "\");");
+                    finalOutput.append("" + getPrintMethod() + "(\"" + OutputCode + "\")");
                    
                 }
                 try
                 {
-                    if (((input.charAt(i) == '\n' && input.charAt(i+1)== '%')) || (input.charAt(i)== '<' && input.charAt(i+1)== '?'))
+                    if (((input.charAt(i) == '\n' && input.charAt(i+1)== '%')) || (input.charAt(i)== '<' && input.charAt(i+1)== '%'))
                     {
                         startCase = (input.charAt(i) == '<' &&input.charAt(i+1)== '?');
                         codeMode = true;
 
                         // Convert tokens to interpretable handles
-                        String OutputCode = outputCode.toString().replace("\"", "¤").replace("\n", "%BR%\");\n" + getPrintMethod() + "(\"");
+                        String OutputCode = outputCode.toString().replace("\"", "¤").replace("\n", "%BR%\")\n" + getPrintMethod() + "(\"");
                         OutputCode = this.handleToTokens(OutputCode.toString(), '$');
-                        finalOutput.append("" + getPrintMethod() + "(\"" + OutputCode + "\");");
+                        finalOutput.append("" + getPrintMethod() + "(\"" + OutputCode + "\")");
 
                         // Clear the output code buffer
                         outputCode = new StringBuilder();
@@ -414,7 +412,7 @@ public class MakoEngine
         // if exiting in text mode, append an end of the scalar String
         if (!parseMode)
         {
-            CallStack += "\");";
+            CallStack += "\")";
         }
         // Run the code
         runtimeMachine.setFunction("" + getPrintMethod() + "",new Delegate() {

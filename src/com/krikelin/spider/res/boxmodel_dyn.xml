@@ -1,0 +1,25 @@
+<document>
+	<vbox flex="1">
+		<hbox height="128">
+			<image src="http://o.scdn.co/image/7baf1b768a03b5b70bea94b7264decb69ec71971" width="128" />
+			<vbox flex="1">
+				<text flex="0"   height="64">Playlist</text>
+				<hbox height="64">
+					<image width="6" flex="0" 
+							src_mousedown="res:toolbar_left.png" 
+							src_mouseover="res:toolbar_left_hover.png" 
+							
+							src="res:toolbar_left.png" />
+					<image flex="1" src="res:toolbar_middle.png" />
+					<image flex="0" width="64" src="res:toolbar_right.png" />
+	
+				</hbox>
+				<text flex="1">test x</text>
+			</vbox>
+			<vbox flex="0" width="50" /> 
+		
+			
+		</hbox>
+		<hbox flex="1"></hbox>
+	</vbox>
+</document>  

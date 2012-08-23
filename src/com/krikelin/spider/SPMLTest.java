@@ -2,6 +2,8 @@ package com.krikelin.spider;
 
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -44,7 +46,7 @@ public class SPMLTest {
 			int xflex = 0;
 			if(i == 0)
 				xflex = 0;
-			if(i > 0 && i < count -1)
+			if(i > 0 && i < count -1) 
 				xflex = 1;
 			box.getChildren().add(createText(String.format("test %s",i),xflex,webview,120));
 		}
@@ -52,8 +54,10 @@ public class SPMLTest {
 		box.setFlex(flex);
 		return box;
 		
-	}
-	public static void main(String[] args){
+	} 
+	public static void main(String[] args) {
+		String path = System.getProperty("java.library.path");
+		System.out.println(path);
 		JFrame frame = new JFrame();
 		JComponent sw = null;
 		SPWebView webview = new SPWebView(sw);
@@ -62,5 +66,14 @@ public class SPMLTest {
 		webview.loadMarkup(c, null);
 		frame.add(webview);
  		frame.show(); 
+ 		Timer t = new Timer();
+ 		t.scheduleAtFixedRate(new TimerTask() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+			}
+		}, 1, 1000);
 	} 
 }
